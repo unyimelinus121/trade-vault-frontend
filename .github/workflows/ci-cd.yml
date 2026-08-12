@@ -5,6 +5,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 0"
 
 permissions:
   contents: read
@@ -89,4 +91,4 @@ jobs:
           IMAGE_TAG: ${{ needs.image.outputs.tag }}
         run: |
           sshpass -e scp -o PreferredAuthentications=password -o PubkeyAuthentication=no /tmp/trade-vault-image/trade-vault-frontend.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/trade-vault-frontend.tar.gz"
-          sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no "$DEPLOY_USER@$DEPLOY_HOST" "set -eu; docker version >/dev/null; docker compose version >/dev/null; cd .trade-vault; test -f docker-compose.yml; gzip -dc /tmp/trade-vault-frontend.tar.gz | docker load; rm -f /tmp/trade-vault-frontend.tar.gz; touch images.env; (grep -v '^FRONTEND_IMAGE_TAG=' images.env || true) > images.env.tmp; printf 'FRONTEND_IMAGE_TAG=%s\n' '$IMAGE_TAG' >> images.env.tmp; mv images.env.tmp images.env; docker compose --env-file .env --env-file images.env pull edge; docker compose --env-file .env --env-file images.env up -d --no-deps --wait --wait-timeout 120 frontend; docker compose --env-file .env --env-file images.env up -d --no-deps --wait --wait-timeout 120 edge; docker compose --env-file .env --env-file images.env ps frontend edge"
+          sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no "$DEPLOY_USER@$DEPLOY_HOST" "set -eu; docker version >/dev/null; docker compose version >/dev/null; cd .trade-vault; test -f docker-compose.yml; gzip -dc /tmp/trade-vault-frontend.tar.gz | docker load; rm -f /tmp/trade-vault-frontend.tar.gz; touch images.env; (grep -v '^FRONTEND_IMAGE_TAG=' images.env || true) > images.env.tmp; printf 'FRONTEND_IMAGE_TAG=%s\n' '$IMAGE_TAG' >> images.env.tmp; mv images.env.tmp images.env; docker compose --env-file .env --env-file images.env pull edge certbot; docker compose --env-file .env --env-file images.env up -d --no-deps --wait --wait-timeout 120 frontend; docker compose --env-file .env --env-file images.env stop edge || true; docker compose --env-file .env --env-file images.env run --rm --service-ports certbot certonly --standalone --non-interactive --agree-tos --register-unsafely-without-email --keep-until-expiring --cert-name tradevault -d 153.92.211.144.sslip.io; docker compose --env-file .env --env-file images.env up -d --no-deps --wait --wait-timeout 120 edge; docker compose --env-file .env --env-file images.env ps frontend edge"
