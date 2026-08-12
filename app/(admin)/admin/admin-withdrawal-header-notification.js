@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAdmin } from "@/app/providers/adminProvider/admin";
 
 export default function AdminWithdrawalHeaderNotification() {
-  const { withdrawalUnreadCount } = useAdmin();
+  const { withdrawalUnreadCount, markWithdrawalNotificationsViewed } = useAdmin();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
 
@@ -17,8 +17,14 @@ export default function AdminWithdrawalHeaderNotification() {
     return () => document.removeEventListener("mousedown", closeOutside);
   }, []);
 
+  async function toggleNotifications() {
+    const nextOpen = !open;
+    setOpen(nextOpen);
+    if (nextOpen && withdrawalUnreadCount > 0) await markWithdrawalNotificationsViewed();
+  }
+
   return <div ref={wrapperRef} className="relative">
-    <button type="button" onClick={() => setOpen((current) => !current)} className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/[.07] bg-surface-container text-on-surface-variant transition hover:border-primary/30 hover:text-primary" aria-label={`${withdrawalUnreadCount} pending withdrawal notifications`} aria-expanded={open}>
+    <button type="button" onClick={toggleNotifications} className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/[.07] bg-surface-container text-on-surface-variant transition hover:border-primary/30 hover:text-primary" aria-label={`${withdrawalUnreadCount} pending withdrawal notifications`} aria-expanded={open}>
       <span className="material-symbols-outlined">notifications</span>
       {withdrawalUnreadCount > 0 && <span className="absolute -right-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full border-2 border-background bg-error px-1 text-[8px] font-black text-[#520007]">{withdrawalUnreadCount > 99 ? "99+" : withdrawalUnreadCount}</span>}
     </button>

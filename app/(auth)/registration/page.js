@@ -139,6 +139,24 @@ export default function RegistrationPage() {
             </span>
           </label>
 
+          <label className="block">
+            <span className="mb-2 block text-xs font-bold text-[#dfe9e1]">
+              Referral code <span className="font-normal text-[#7f9283]">(optional)</span>
+            </span>
+            <input
+              className={`${inputClass} uppercase`}
+              type="text"
+              name="referralCode"
+              value={registerForm.referralCode}
+              onChange={register}
+              placeholder="TVXXXXXXXXXXXXXX"
+              autoComplete="off"
+              maxLength={16}
+              disabled={loading}
+            />
+            <span className="mt-2 block text-xs text-[#7f9283]">Use a valid code to receive an extra ₦2,000 referral bonus.</span>
+          </label>
+
           <div>
             <span className="mb-2 block text-xs font-bold text-[#dfe9e1]">
               Profile image

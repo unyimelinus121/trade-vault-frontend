@@ -227,7 +227,7 @@ export default function WalletPage() {
                   <span className="material-symbols-outlined">account_balance_wallet</span>
                 </span>
               </div>
-              <div className="mt-auto grid grid-cols-3 gap-3 pt-14 max-[650px]:grid-cols-1">
+              <div className="mt-auto grid grid-cols-4 gap-3 pt-14 max-[760px]:grid-cols-2 max-[480px]:grid-cols-1">
                 <div className="rounded-2xl border border-white/[.08] bg-black/15 p-4">
                   <span className="text-[9px] font-bold uppercase tracking-[.12em] text-white/45">Wallet balance</span>
                   <strong className="mt-2 block text-lg text-white">{formatNaira(wallet?.balance)}</strong>
@@ -236,6 +236,10 @@ export default function WalletPage() {
                   <span className="text-[9px] font-bold uppercase tracking-[.12em] text-white/45">Pending withdrawals</span>
                   <strong className="mt-2 block text-lg text-amber-200">{formatNaira(wallet?.pendingWithdrawals)}</strong>
                 </div>
+                <div className="rounded-2xl border border-amber-300/15 bg-amber-300/[.05] p-4">
+                  <span className="text-[9px] font-bold uppercase tracking-[.12em] text-white/45">Locked bonus</span>
+                  <strong className="mt-2 block text-lg text-amber-200">{formatNaira(wallet?.lockedBonus)}</strong>
+                </div>
                 <div className="rounded-2xl border border-primary/20 bg-primary/[.07] p-4">
                   <span className="text-[9px] font-bold uppercase tracking-[.12em] text-white/45">Available to withdraw</span>
                   <strong className="mt-2 block text-lg text-primary">{formatNaira(wallet?.availableToWithdraw)}</strong>
@@ -243,6 +247,10 @@ export default function WalletPage() {
               </div>
             </div>
           </section>
+
+          {Number(wallet?.lockedBonus || 0) > 0 && <p className="col-span-full rounded-xl border border-amber-300/20 bg-amber-300/[.05] px-4 py-3 text-xs leading-5 text-amber-100">
+            Your bonus is included in the wallet balance but remains unavailable for withdrawal until your first card trade is completed successfully.
+          </p>}
 
           <section className="rounded-[1.75rem] border border-white/[.08] bg-surface-container/80 p-6 shadow-2xl max-[540px]:p-5">
             <div className="flex items-start justify-between gap-4">

@@ -80,14 +80,14 @@ export default function PublicAuth({ children }) {
   async function logout() {
     setLogoutLoading(true);
     try {
-      if (token) await api.post("/logout");
+      if (token) await api.post(user?.role === "admin" ? "/admin/logout" : "/logout");
     } catch {
       // Local session cleanup must still complete if the server session expired.
     } finally {
       customerSupportApi.clearSupportState();
       clearSession();
       setLogoutLoading(false);
-      router.replace("/");
+      router.replace(user?.role === "admin" ? "/admin/login" : "/");
     }
   }
 

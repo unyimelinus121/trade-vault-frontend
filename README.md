@@ -2,6 +2,8 @@
 
 This repository contains the TradeVault customer and administrator Next.js application. The API, PostgreSQL migrations, and production deployment bundle live in the separate `trade-vault-backend` repository.
 
+Registration accepts an optional referral code. Customers can copy their own code from Account and see total, locked-bonus, pending-withdrawal, and available balances in Wallet. Administrators are confined to the operations console while signed in and use the dedicated admin logout flow; opening the withdrawal notification marks the queue notification as viewed.
+
 ## Development
 
 ```sh

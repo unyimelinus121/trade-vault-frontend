@@ -7,6 +7,7 @@ const emptyRegistrationForm = {
   lastName: "",
   email: "",
   password: "",
+  referralCode: "",
   image: null,
 };
 
@@ -64,6 +65,7 @@ export default function useRegistrationForm({ api, router, setSession, begin, fa
       formData.append("lastName", registerForm.lastName.trim());
       formData.append("email", registerForm.email.trim().toLowerCase());
       formData.append("password", registerForm.password);
+      if (registerForm.referralCode.trim()) formData.append("referralCode", registerForm.referralCode.trim().toUpperCase());
       if (registerForm.image) formData.append("avatar", registerForm.image);
       const response = await api.post("/register", formData);
       localStorage.setItem("verificationEmail", registerForm.email.trim().toLowerCase());

@@ -68,7 +68,7 @@ async function proxyRequest(request, { params }) {
       return Response.json({ ...data, authenticated: true }, { status: response.status, headers: responseHeaders });
     }
   }
-  if (routePath === "/logout") {
+  if (new Set(["/logout", "/admin/logout"]).has(routePath)) {
     responseHeaders.append("Set-Cookie", `${sessionCookie}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${process.env.NODE_ENV === "production" ? "; Secure" : ""}`);
   }
   return new Response(response.body, {

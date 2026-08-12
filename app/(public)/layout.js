@@ -5,6 +5,7 @@ import { getInitialRates } from "../lib/server-rates";
 import ChatProvider from "../providers/chatProvider/chat";
 import CustomerChatWidget from "../components/chat/customer-chat-widget";
 import TradeProvider from "../providers/tradeProvider/trade";
+import AdminSessionRedirect from "./admin-session-redirect";
 
 export default async function PublicLayout({ children }) {
   const initialRates = await getInitialRates();
@@ -15,8 +16,10 @@ export default async function PublicLayout({ children }) {
         <TradeProvider>
           <ChatProvider>
             <PublicProvider initialRates={initialRates}>
-              <PublicChrome>{children}</PublicChrome>
-              <CustomerChatWidget />
+              <AdminSessionRedirect>
+                <PublicChrome>{children}</PublicChrome>
+                <CustomerChatWidget />
+              </AdminSessionRedirect>
             </PublicProvider>
           </ChatProvider>
         </TradeProvider>

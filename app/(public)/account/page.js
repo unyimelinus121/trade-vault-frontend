@@ -86,6 +86,14 @@ export default function AccountPage() {
                 <AccountInformation label="Email address" value={user.email} wide />
                 <AccountInformation label="Account role" value={user.role} />
                 <AccountInformation label="Verification" value={user.isVerified ? "Verified" : "Not verified"} />
+                <div className="col-span-2 rounded-xl bg-surface-container-highest/45 px-4 py-4 max-[560px]:col-span-1">
+                  <span className="block text-[10px] font-bold uppercase tracking-[.1em] text-on-surface-variant">Your referral code</span>
+                  <div className="mt-2 flex items-center justify-between gap-3">
+                    <strong className="break-all font-mono text-base tracking-[.08em] text-primary">{user.referralCode || "Generating…"}</strong>
+                    {user.referralCode && <button type="button" onClick={() => navigator.clipboard?.writeText(user.referralCode)} className="rounded-lg border border-primary/20 px-3 py-2 text-[10px] font-bold text-primary">Copy</button>}
+                  </div>
+                  <p className="mt-2 text-[10px] leading-4 text-on-surface-variant">Share this code. You receive ₦3,000 and the new customer receives an extra ₦2,000 after verified registration.</p>
+                </div>
               </div>
             </section>
 

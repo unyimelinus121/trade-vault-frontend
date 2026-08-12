@@ -614,6 +614,19 @@ export default function AdminProvider({ children, initialRates }) {
   const [tradeError, setTradeError] = useState("");
   const [tradeMessage, setTradeMessage] = useState("");
 
+  async function markWithdrawalNotificationsViewed() {
+    if (withdrawalUnreadCount <= 0) return true;
+    const previous = withdrawalUnreadCount;
+    setWithdrawalUnreadCount(0);
+    try {
+      await api.patch("/admin/withdrawals/viewed");
+      return true;
+    } catch {
+      setWithdrawalUnreadCount(previous);
+      return false;
+    }
+  }
+
   function clearTradeFeedback() {
     setTradeError("");
     setTradeMessage("");
@@ -813,6 +826,7 @@ export default function AdminProvider({ children, initialRates }) {
         tradePeriodSummary,
         tradeUnreadCount,
         withdrawalUnreadCount,
+        markWithdrawalNotificationsViewed,
         tradeLoading,
         processingTradeId,
         tradeError,
