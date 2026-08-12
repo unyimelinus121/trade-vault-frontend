@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TradeVault web application
 
-## Getting Started
+This repository contains the TradeVault customer and administrator Next.js application. The API, PostgreSQL migrations, and production deployment bundle live in the separate `trade-vault-backend` repository.
 
-First, run the development server:
+## Development
 
-```bash
+```sh
+cp .env.example .env.local
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+For the full containerized application, clone both repositories as sibling directories named `frontend` and `backend`, then use `backend/compose.local.yml`.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Validation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sh
+npm run lint
+npm run build -- --webpack
+npm audit --omit=dev --audit-level=high
+```
 
-## Learn More
+## Container
 
-To learn more about Next.js, take a look at the following resources:
+The multi-stage Dockerfile validates and builds Next.js standalone output, then runs it as an unprivileged user with a built-in health check. `BACKEND_URL` is server-only and must resolve to the API container at runtime. Browser requests remain same-origin and Socket.IO defaults to the public page origin.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+docker build -t trade-vault-frontend .
+docker run --rm -p 3000:3000 -e BACKEND_URL=http://host.docker.internal:4001 trade-vault-frontend
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## CI/CD
 
-## Deploy on Vercel
+GitHub Actions validates pull requests. A push to `main` publishes immutable images to `ghcr.io/<owner>/trade-vault-frontend` and updates the frontend and edge services on the deployment host.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Set the repository variable `DEPLOY_ENABLED=true`, then create the protected
+`production` GitHub environment and secrets documented in the backend
+repository. Deploy the backend once first so
+`/opt/trade-vault/docker-compose.yml` exists.
