@@ -39,4 +39,4 @@ credentials.
 Set the repository variable `DEPLOY_ENABLED=true`, then create the protected
 `production` GitHub environment and secrets documented in the backend
 repository. Deploy the backend once first so
-`/opt/trade-vault/docker-compose.yml` exists.
+`$HOME/.trade-vault/docker-compose.yml` exists on the server.
