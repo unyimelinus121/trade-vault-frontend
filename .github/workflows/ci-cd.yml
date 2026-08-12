@@ -73,13 +73,13 @@ jobs:
           path: /tmp/trade-vault-image
       - name: Configure password-authenticated SSH
         env:
-          DEPLOY_KNOWN_HOSTS: ${{ vars.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          test -n "$DEPLOY_KNOWN_HOSTS"
+          test -n "$DEPLOY_HOST"
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends sshpass
           install -m 700 -d ~/.ssh
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh-keyscan -T 10 -H "$DEPLOY_HOST" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
       - name: Deploy immutable frontend image
         env:
