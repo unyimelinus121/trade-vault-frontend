@@ -1,3 +1,5 @@
+import { getExternalOrigin } from "../origin.mjs";
+
 const backendOrigin = String(process.env.BACKEND_URL || "").replace(/\/$/, "");
 const sessionCookie = "tradevault_session";
 
@@ -5,7 +7,7 @@ async function proxyRequest(request, { params }) {
   if (!backendOrigin) return Response.json({ message: "Backend service is not configured" }, { status: 503 });
   if (!new Set(["GET", "HEAD", "OPTIONS"]).has(request.method)) {
     const origin = request.headers.get("origin");
-    if (origin && origin !== new URL(request.url).origin) {
+    if (origin && origin !== getExternalOrigin(request)) {
       return Response.json({ message: "Cross-origin request rejected" }, { status: 403 });
     }
   }
