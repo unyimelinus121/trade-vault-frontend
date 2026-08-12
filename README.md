@@ -31,7 +31,10 @@ docker run --rm -p 3000:3000 -e BACKEND_URL=http://host.docker.internal:4001 tra
 
 ## CI/CD
 
-GitHub Actions validates pull requests. A push to `main` publishes immutable images to `ghcr.io/<owner>/trade-vault-frontend` and updates the frontend and edge services on the deployment host.
+GitHub Actions validates pull requests. A push to `main` builds an immutable
+Docker image, transfers it to the deployment host over SSH, and updates the
+frontend and edge services. The host does not need GitHub or registry
+credentials.
 
 Set the repository variable `DEPLOY_ENABLED=true`, then create the protected
 `production` GitHub environment and secrets documented in the backend
