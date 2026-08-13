@@ -729,7 +729,7 @@ export default function AdminProvider({ children, initialRates }) {
     if (withdrawalResponse.status === "fulfilled") {
       setWithdrawalUnreadCount(Number(withdrawalResponse.value.data?.unreadCount || 0));
     }
-  }, 10_000);
+  }, 30_000);
 
   useEffect(() => {
     let active = true;

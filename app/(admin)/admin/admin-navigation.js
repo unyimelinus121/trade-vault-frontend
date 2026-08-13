@@ -49,7 +49,7 @@ export function AdminDesktopNavigation() {
 }
 
 export function AdminMobileNavigation() {
-  return <nav className="mobile-safe-nav fixed right-3 left-3 z-50 hidden grid-cols-6 rounded-2xl border border-white/10 bg-surface-container/95 p-2 shadow-2xl backdrop-blur-xl max-[900px]:grid">{mobileNavItems.map((item) => <NavItem item={item} mobile key={item.label} />)}</nav>;
+  return <nav className="mobile-safe-nav fixed right-3 left-3 z-50 hidden grid-cols-6 rounded-2xl border border-white/10 bg-surface-container/95 p-2 shadow-2xl backdrop-blur-xl max-[1024px]:grid">{mobileNavItems.map((item) => <NavItem item={item} mobile key={item.label} />)}</nav>;
 }
 
 export function AdminPageIdentity() {

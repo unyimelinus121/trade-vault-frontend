@@ -45,7 +45,7 @@ export function useAdminWithdrawals() {
     loadWithdrawals();
   }, [loadWithdrawals]);
 
-  useVisibleInterval(() => loadWithdrawals({ silent: true }), 8_000);
+  useVisibleInterval(() => loadWithdrawals({ silent: true }), 30_000);
 
   useEffect(() => {
     const reload = () => loadWithdrawals();

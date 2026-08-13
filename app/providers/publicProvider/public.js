@@ -58,7 +58,7 @@ export default function PublicProvider({ children, initialRates }) {
     fetchData();
   }, [hasInitialRates]);
 
-  useVisibleInterval(() => getRate({ silent: true }), 30_000);
+  useVisibleInterval(() => getRate({ silent: true }), 300_000);
 
   return (
     <PublicContext.Provider value={{ rates, loading, error, getRate }}>

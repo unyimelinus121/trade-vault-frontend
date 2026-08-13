@@ -9,11 +9,29 @@ import { usePasswordResetActions } from "./passwordResetActions";
 import useCustomerSupport from "./use-customer-support";
 
 const PublicAuthContext = createContext(null);
+const profileCacheKey = "tradevault_profile";
+
+function readCachedProfile() {
+  if (typeof window === "undefined") return null;
+  try {
+    const cached = JSON.parse(localStorage.getItem(profileCacheKey) || "null");
+    return cached?.id && cached?.role ? cached : null;
+  } catch {
+    return null;
+  }
+}
+
+function cacheProfile(profile) {
+  try {
+    if (profile) localStorage.setItem(profileCacheKey, JSON.stringify(profile));
+    else localStorage.removeItem(profileCacheKey);
+  } catch {}
+}
 
 export default function PublicAuth({ children }) {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(readCachedProfile);
+  const [token, setToken] = useState(() => readCachedProfile() ? "restoring-session" : null);
   const [authReady, setAuthReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
@@ -38,11 +56,13 @@ export default function PublicAuth({ children }) {
   function setSession(receivedUser) {
     setUser(receivedUser);
     setToken("cookie-session");
+    cacheProfile(receivedUser);
   }
 
   function clearSession() {
     setUser(null);
     setToken(null);
+    cacheProfile(null);
   }
 
   useEffect(() => {

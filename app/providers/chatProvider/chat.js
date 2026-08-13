@@ -214,7 +214,8 @@ export default function ChatProvider({ children }) {
           loadAdminConversation(selectedRef.current);
         }
       } else {
-        loadUserChat();
+        // The socket supplies new messages. Load the full thread only when the
+        // customer opens chat, avoiding a large request on every page visit.
       }
     });
 

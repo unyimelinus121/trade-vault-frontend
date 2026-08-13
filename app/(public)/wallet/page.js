@@ -132,6 +132,7 @@ export default function WalletPage() {
     bankAccountActionLoading,
     withdrawalError,
     withdrawalMessage,
+    getBankAccounts,
     getWithdrawals,
     submitWithdrawal,
     saveBankAccount,
@@ -145,6 +146,11 @@ export default function WalletPage() {
   const [showAccountForm, setShowAccountForm] = useState(false);
   const [bankForm, setBankForm] = useState(emptyBankForm);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+
+  useEffect(() => {
+    if (user?.role !== "user" || !token) return;
+    Promise.all([getBankAccounts(), getWithdrawals({ silent: true })]);
+  }, [getBankAccounts, getWithdrawals, token, user?.role]);
 
   const verifiedBankAccounts = bankAccounts.filter((item) => item.isVerified);
   const selectedAccount = verifiedBankAccounts.find((item) => String(item.id) === selectedAccountId) || verifiedBankAccounts[0];

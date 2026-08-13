@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
 import { formatTradeDate, LoginRequired, PageLoader } from "@/app/components/trade/trade-ui";
 import { usePublicAuth } from "@/app/providers/publicProvider/publicAuthProvider";
 import { useTrade } from "@/app/providers/tradeProvider/trade";
@@ -15,9 +14,8 @@ function notificationAppearance(type) {
 
 export default function NotificationsPage() {
   const { user, token, authReady } = usePublicAuth();
-  const { notifications, unreadNotifications, notificationLoading, getNotifications, markNotificationRead, markAllNotificationsRead } = useTrade();
+  const { notifications, unreadNotifications, notificationLoading, markNotificationRead, markAllNotificationsRead } = useTrade();
 
-  useEffect(() => { if (user?.role === "user" && token) getNotifications(); }, [getNotifications, token, user?.role]);
   if (!authReady) return <PageLoader />;
   if (!user || !token || user.role !== "user") return <LoginRequired title="Log in to view notifications" />;
 

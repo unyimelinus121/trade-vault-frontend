@@ -28,7 +28,7 @@ export default async function AdminLayout({ children }) {
         <ChatProvider>
           <AdminProvider initialRates={initialRates}>
             <div className="min-h-screen bg-background text-on-background">
-              <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-outline-variant/10 bg-surface-container-low max-[900px]:hidden">
+              <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-outline-variant/10 bg-surface-container-low max-[1024px]:hidden">
                 <Link href="/admin/dashboard" className="flex h-16 items-center border-b border-outline-variant/10 px-6" aria-label="Admin dashboard">
                   <Image src="/tradevault-logo.svg" alt="TradeVault" width={560} height={150} priority className="h-auto w-[158px]" />
                 </Link>
@@ -39,17 +39,17 @@ export default async function AdminLayout({ children }) {
                 <AdminCurrentUser />
               </aside>
 
-              <header className="fixed top-0 right-0 left-64 z-40 flex h-16 items-center justify-between border-b border-outline-variant/10 bg-background/80 px-8 backdrop-blur-xl max-[900px]:left-0 max-[600px]:px-4">
-          <div className="flex items-center gap-3"><Link href="/admin/dashboard" className="hidden max-[900px]:block" aria-label="Admin dashboard"><Image src="/tradevault-mark.svg" alt="TradeVault" width={136} height={146} className="h-8 w-auto" /></Link><AdminPageIdentity /></div>
-          <div className="flex items-center gap-3">
-            <AdminGlobalSearch />
+              <header className="fixed top-0 right-0 left-64 z-40 flex h-16 items-center justify-between border-b border-outline-variant/10 bg-background/80 px-8 backdrop-blur-xl max-[1024px]:left-0 max-[600px]:px-4">
+          <div className="flex min-w-0 items-center gap-3"><Link href="/admin/dashboard" className="hidden shrink-0 max-[1024px]:block" aria-label="Admin dashboard"><Image src="/tradevault-mark.svg" alt="TradeVault Admin" width={136} height={146} priority className="h-9 w-auto" /></Link><AdminPageIdentity /></div>
+          <div className="flex shrink-0 items-center gap-3 max-[600px]:gap-2">
+            <span className="max-[760px]:hidden"><AdminGlobalSearch /></span>
             <AdminWithdrawalHeaderNotification />
             <AdminChatHeaderButton />
             <AdminCurrentUser compact />
           </div>
               </header>
 
-              <main className="min-h-screen pl-64 pt-16 max-[900px]:mobile-safe-content max-[900px]:pl-0"><div className="mx-auto w-full max-w-[1600px] p-8 max-[600px]:p-4">{children}</div></main>
+              <main className="min-h-screen pl-64 pt-16 max-[1024px]:mobile-safe-content max-[1024px]:pl-0"><div className="mx-auto w-full max-w-[1600px] p-8 max-[600px]:p-4">{children}</div></main>
               <AdminMobileNavigation />
               <AdminChatNotification />
               <AdminTradeNotification />

@@ -4,7 +4,7 @@ export async function getInitialRates() {
   try {
     if (!backendOrigin) return [];
     const response = await fetch(`${backendOrigin}/getRates`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (!response.ok) return [];

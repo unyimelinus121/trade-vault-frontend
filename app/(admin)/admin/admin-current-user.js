@@ -25,7 +25,12 @@ function AdminAvatar({ user, size = "small" }) {
 export default function AdminCurrentUser({ compact = false }) {
   const { user, logout, logoutLoading } = usePublicAuth();
 
-  if (compact) return <AdminAvatar user={user} />;
+  if (compact) return <div className="flex items-center gap-1.5">
+    <AdminAvatar user={user} />
+    <button type="button" onClick={logout} disabled={logoutLoading} className="hidden h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/[.07] text-on-surface-variant transition hover:border-error/30 hover:text-error disabled:opacity-50 max-[1024px]:grid" aria-label="Log out of administrator account">
+      <span className="material-symbols-outlined text-lg">logout</span>
+    </button>
+  </div>;
 
   return (
     <div className="flex items-center gap-3 border-t border-outline-variant/10 p-4">

@@ -197,22 +197,17 @@ export default function TradeProvider({ children }) {
     if (!token || user?.role !== "user") return;
     async function loadAccountData() {
       await Promise.all([
-        getMyTrades(),
         getWallet(),
         getNotifications(),
-        getBankAccounts(),
-        getWithdrawals(),
       ]);
     }
     loadAccountData();
-  }, [authReady, getBankAccounts, getMyTrades, getNotifications, getWallet, getWithdrawals, token, user?.role]);
+  }, [authReady, getNotifications, getWallet, token, user?.role]);
 
   useVisibleInterval(() => Promise.all([
-    getMyTrades({}, { silent: true }),
     getWallet({ silent: true }),
     getNotifications({ silent: true }),
-    getWithdrawals({ silent: true }),
-  ]), 8_000, authReady && Boolean(token) && user?.role === "user");
+  ]), 60_000, authReady && Boolean(token) && user?.role === "user");
 
   useEffect(() => {
     if (typeof window === "undefined" || user?.role !== "user") return undefined;
@@ -224,11 +219,11 @@ export default function TradeProvider({ children }) {
         await getNotifications();
         return;
       }
-      await Promise.all([getMyTrades(), getWallet(), getNotifications(), getWithdrawals()]);
+      await Promise.all([getMyTrades({}, { silent: true }), getWallet({ silent: true }), getNotifications({ silent: true })]);
     }
     window.addEventListener("tradevault:notification", refreshAfterNotification);
     return () => window.removeEventListener("tradevault:notification", refreshAfterNotification);
-  }, [getMyTrades, getNotifications, getWallet, getWithdrawals, user?.role]);
+  }, [getMyTrades, getNotifications, getWallet, user?.role]);
 
   useEffect(() => {
     if (typeof window === "undefined" || user?.role !== "user") return undefined;
