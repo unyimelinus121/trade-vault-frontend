@@ -14,7 +14,7 @@ function AdminAvatar({ user, size = "small" }) {
   return (
     <span className={`grid shrink-0 place-items-center overflow-hidden rounded-full bg-primary text-xs font-bold text-on-primary ${dimensions}`}>
       {avatarUrl ? (
-        <Image src={avatarUrl} alt={`${user.firstName} profile`} width={40} height={40} unoptimized className="h-full w-full object-cover" />
+        <Image src={avatarUrl} alt={`${user.firstName} profile`} width={40} height={40} sizes="40px" className="h-full w-full object-cover" />
       ) : (
         initials
       )}

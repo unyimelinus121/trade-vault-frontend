@@ -55,8 +55,23 @@ const nextConfig = {
   // device testing. Next.js otherwise blocks its client-side JavaScript.
   allowedDevOrigins: ["127.0.0.1", "localhost", "192.168.0.169", "172.20.10.2"],
   poweredByHeader: false,
+  images: {
+    minimumCacheTTL: 86400,
+    remotePatterns: configuredImageOrigins.map((origin) => {
+      const url = new URL(origin);
+      return { protocol: url.protocol.slice(0, -1), hostname: url.hostname, port: url.port, pathname: "/uploads/**" };
+    }),
+  },
   async headers() {
     return [
+      {
+        source: "/fonts/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        source: "/payment-logos/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
       {
         source: "/:path*",
         headers: [

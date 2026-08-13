@@ -20,7 +20,7 @@ function Avatar({ user, avatarUrl, size = "large" }) {
   const dimensions = size === "large" ? "h-20 w-20 text-2xl" : "h-10 w-10 text-sm";
   return (
     <span className={`grid shrink-0 place-items-center overflow-hidden rounded-full bg-primary font-bold text-on-primary ring-1 ring-white/10 ${dimensions}`}>
-      {avatarUrl ? <Image src={avatarUrl} alt={`${user.firstName} profile`} width={80} height={80} unoptimized className="h-full w-full object-cover" /> : initial}
+      {avatarUrl ? <Image src={avatarUrl} alt={`${user.firstName} profile`} width={80} height={80} sizes="80px" className="h-full w-full object-cover" /> : initial}
     </span>
   );
 }

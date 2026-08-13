@@ -5,6 +5,7 @@ export async function getInitialRates() {
     if (!backendOrigin) return [];
     const response = await fetch(`${backendOrigin}/getRates`, {
       next: { revalidate: 60 },
+      signal: AbortSignal.timeout(2_500),
     });
 
     if (!response.ok) return [];

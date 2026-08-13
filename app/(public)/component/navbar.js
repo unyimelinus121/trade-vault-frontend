@@ -18,7 +18,7 @@ function UserAvatar({ user, avatarUrl, mobile = false }) {
       aria-label={`${user?.firstName || "User"} account`}
     >
       {avatarUrl ? (
-        <Image src={avatarUrl} alt={`${user?.firstName || "User"} profile`} width={40} height={40} unoptimized className="h-full w-full object-cover" />
+        <Image src={avatarUrl} alt={`${user?.firstName || "User"} profile`} width={40} height={40} sizes="40px" className="h-full w-full object-cover" />
       ) : initial}
     </Link>
   );

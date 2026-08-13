@@ -7,14 +7,18 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { formatTrade } from "./tradeHelpers";
 import useVisibleInterval from "@/app/hooks/use-visible-interval";
+import { usePathname } from "next/navigation";
 
 const TradeContext = createContext(null);
 
 export default function TradeProvider({ children }) {
+  const pathname = usePathname();
+  const accountSummaryRef = useRef({ token: null, loadedAt: 0 });
   const { user, token, authReady } = usePublicAuth();
   const [trades, setTrades] = useState([]);
   const [selectedTrade, setSelectedTrade] = useState(null);
@@ -77,9 +81,13 @@ export default function TradeProvider({ children }) {
     if (user?.role !== "user") return null;
     if (!options.silent) setWalletLoading(true);
     try {
-      const response = await api.get("/wallet");
+      const response = await api.get("/wallet", {
+        params: options.summary ? { transactions: "false" } : undefined,
+      });
       setWallet(response.data?.wallet || null);
-      setWalletTransactions(response.data?.transactions || []);
+      if (Array.isArray(response.data?.transactions)) {
+        setWalletTransactions(response.data.transactions);
+      }
       if (response.data?.withdrawalLimits) setWithdrawalLimits(response.data.withdrawalLimits);
       return response.data;
     } catch (requestError) {
@@ -180,8 +188,12 @@ export default function TradeProvider({ children }) {
     if (user?.role !== "user") return null;
     if (!options.silent) setNotificationLoading(true);
     try {
-      const response = await api.get("/notifications");
-      setNotifications(response.data?.notifications || []);
+      const response = await api.get("/notifications", {
+        params: options.summary ? { summary: "true" } : undefined,
+      });
+      if (Array.isArray(response.data?.notifications)) {
+        setNotifications(response.data.notifications);
+      }
       setUnreadNotifications(response.data?.unreadCount || 0);
       return response.data;
     } catch (requestError) {
@@ -195,18 +207,27 @@ export default function TradeProvider({ children }) {
   useEffect(() => {
     if (!authReady) return;
     if (!token || user?.role !== "user") return;
+    if (new Set(["/login", "/registration", "/verify-code"]).has(pathname)) return;
+    if (accountSummaryRef.current.token !== token) {
+      accountSummaryRef.current = { token, loadedAt: 0 };
+    }
+    const summaryFresh = Date.now() - accountSummaryRef.current.loadedAt < 30_000;
     async function loadAccountData() {
-      await Promise.all([
-        getWallet(),
-        getNotifications(),
-      ]);
+      const requests = [];
+      if (pathname === "/wallet") requests.push(getWallet());
+      else if (!summaryFresh) requests.push(getWallet({ silent: true, summary: true }));
+      if (pathname === "/notifications") requests.push(getNotifications());
+      else if (!summaryFresh) requests.push(getNotifications({ silent: true, summary: true }));
+      if (!requests.length) return;
+      await Promise.all(requests);
+      accountSummaryRef.current = { token, loadedAt: Date.now() };
     }
     loadAccountData();
-  }, [authReady, getNotifications, getWallet, token, user?.role]);
+  }, [authReady, getNotifications, getWallet, pathname, token, user?.role]);
 
   useVisibleInterval(() => Promise.all([
-    getWallet({ silent: true }),
-    getNotifications({ silent: true }),
+    getWallet({ silent: true, summary: true }),
+    getNotifications({ silent: true, summary: true }),
   ]), 60_000, authReady && Boolean(token) && user?.role === "user");
 
   useEffect(() => {
@@ -216,10 +237,10 @@ export default function TradeProvider({ children }) {
       if (type.startsWith("withdrawal_")) {
         // Dedicated withdrawal/wallet socket events update those resources.
         // Only refresh notification state here to avoid duplicate API requests.
-        await getNotifications();
+        await getNotifications({ silent: true, summary: true });
         return;
       }
-      await Promise.all([getMyTrades({}, { silent: true }), getWallet({ silent: true }), getNotifications({ silent: true })]);
+      await Promise.all([getMyTrades({}, { silent: true }), getWallet({ silent: true, summary: true }), getNotifications({ silent: true, summary: true })]);
     }
     window.addEventListener("tradevault:notification", refreshAfterNotification);
     return () => window.removeEventListener("tradevault:notification", refreshAfterNotification);
@@ -233,13 +254,13 @@ export default function TradeProvider({ children }) {
       setWithdrawals((current) => current.map((item) => (
         item.id === incoming.id ? { ...item, ...incoming } : item
       )));
-      getWallet();
+      getWallet({ silent: true, summary: true });
     }
     function updateWallet(event) {
       const incoming = event.detail;
       if (!incoming) return;
       setWallet((current) => ({ ...(current || {}), ...incoming }));
-      getWallet();
+      getWallet({ silent: true, summary: true });
     }
     window.addEventListener("tradevault:withdrawal-updated", updateWithdrawal);
     window.addEventListener("tradevault:wallet-updated", updateWallet);

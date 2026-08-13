@@ -8,7 +8,7 @@ export default function ChatAvatar({ person, size = "md", admin = false }) {
   const avatar = chatAssetUrl(person?.avatar);
   return (
     <span className={`relative grid shrink-0 place-items-center overflow-hidden rounded-full font-extrabold ring-1 ring-white/10 ${sizes} ${admin ? "bg-primary text-on-primary" : "bg-primary-container/20 text-primary"}`}>
-      {avatar ? <Image src={avatar} alt="" fill sizes="56px" unoptimized className="object-cover" /> : initials(person)}
+      {avatar ? <Image src={avatar} alt="" fill sizes="56px" className="object-cover" /> : initials(person)}
     </span>
   );
 }

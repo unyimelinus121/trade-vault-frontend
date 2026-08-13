@@ -37,7 +37,7 @@ export function UserAvatar({ user, size = "medium" }) {
   return (
     <span className={`grid shrink-0 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-primary-container to-secondary-container font-extrabold text-white ${dimensions}`}>
       {avatarUrl ? (
-        <Image src={avatarUrl} alt={`${user.firstName || "User"} avatar`} width={80} height={80} unoptimized className="h-full w-full object-cover" />
+        <Image src={avatarUrl} alt={`${user.firstName || "User"} avatar`} width={80} height={80} sizes={size === "large" ? "80px" : "40px"} className="h-full w-full object-cover" />
       ) : (
         initials
       )}

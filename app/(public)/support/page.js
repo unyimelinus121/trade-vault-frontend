@@ -22,7 +22,7 @@ function formatDate(value) {
 
 function Avatar({ user }) {
   const avatarUrl = user?.avatar ? `${apiOrigin}${user.avatar.startsWith("/") ? "" : "/"}${user.avatar}` : "";
-  return <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-xl bg-primary font-bold text-on-primary">{avatarUrl ? <Image src={avatarUrl} alt={`${user.firstName} avatar`} width={48} height={48} unoptimized className="h-full w-full object-cover" /> : user?.firstName?.[0]?.toUpperCase() || "U"}</span>;
+  return <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-xl bg-primary font-bold text-on-primary">{avatarUrl ? <Image src={avatarUrl} alt={`${user.firstName} avatar`} width={48} height={48} sizes="40px" className="h-full w-full object-cover" /> : user?.firstName?.[0]?.toUpperCase() || "U"}</span>;
 }
 
 function StatusBadge({ status }) {
