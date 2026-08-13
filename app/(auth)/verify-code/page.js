@@ -7,6 +7,9 @@ export default function VerifyCodePage() {
     verificationCode,
     handleVerificationCode,
     verifyRegistrationCode,
+    resendVerificationCode,
+    resendLoading,
+    resendCooldown,
     loading,
     error,
     message,
@@ -67,6 +70,18 @@ export default function VerifyCodePage() {
           >
             {loading ? "Verifying..." : "Verify account"}
           </button>
+
+          <div className="border-t border-white/[.07] pt-5 text-center">
+            <p className="text-xs text-on-surface-variant">Code invalid, expired, or not received?</p>
+            <button
+              type="button"
+              onClick={resendVerificationCode}
+              disabled={loading || resendLoading || resendCooldown > 0}
+              className="mt-3 min-h-11 rounded-xl border border-primary/25 px-5 text-sm font-bold text-primary transition hover:bg-primary/[.06] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {resendLoading ? "Sending new code…" : resendCooldown > 0 ? `Request another code in ${resendCooldown}s` : "Request a new code"}
+            </button>
+          </div>
         </form>
       </section>
     </main>

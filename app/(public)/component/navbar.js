@@ -81,7 +81,12 @@ export default function Navbar() {
               <UserAvatar user={user} avatarUrl={avatarUrl} mobile />
             </span>
           ) : (
-            <Link href="/login" className="hidden h-11 w-11 place-items-center rounded-full bg-primary text-on-primary max-[900px]:grid" aria-label="Log in"><span className="material-symbols-outlined">person</span></Link>
+            <Link href="/login" className="hidden h-11 w-11 place-items-center rounded-full bg-primary text-on-primary max-[900px]:grid" aria-label="Log in">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4.5 21a7.5 7.5 0 0 1 15 0" />
+              </svg>
+            </Link>
           )}
         </div>
       </header>

@@ -36,8 +36,8 @@ const configuredImageOrigins = [process.env.NEXT_PUBLIC_API_URL]
 const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${development ? " 'unsafe-eval'" : ""}`,
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' data: https://fonts.gstatic.com",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data:",
   `img-src 'self' data: blob: https: ${development ? "http://127.0.0.1:4001 http://localhost:4001" : ""} ${configuredImageOrigins.join(" ")}`,
   `connect-src 'self' ${[...localDevelopmentConnections, ...configuredConnections].join(" ")}`,
   "object-src 'none'",

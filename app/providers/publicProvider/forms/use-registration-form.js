@@ -15,10 +15,20 @@ export default function useRegistrationForm({ api, router, setSession, begin, fa
   const [registerForm, setRegisterForm] = useState(emptyRegistrationForm);
   const [verificationCode, setVerificationCode] = useState("");
   const [imagePreview, setImagePreview] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   useEffect(() => () => {
     if (imagePreview.startsWith("blob:")) URL.revokeObjectURL(imagePreview);
   }, [imagePreview]);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return undefined;
+    const timer = window.setInterval(() => {
+      setResendCooldown((seconds) => Math.max(seconds - 1, 0));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [resendCooldown]);
 
   function register(event) {
     const { name, value } = event.target;
@@ -69,6 +79,7 @@ export default function useRegistrationForm({ api, router, setSession, begin, fa
       if (registerForm.image) formData.append("avatar", registerForm.image);
       const response = await api.post("/register", formData);
       localStorage.setItem("verificationEmail", registerForm.email.trim().toLowerCase());
+      setResendCooldown(60);
       succeed(response.data?.message || "Check your email for the verification code.");
       router.push("/verify-code");
       return response.data;
@@ -77,6 +88,32 @@ export default function useRegistrationForm({ api, router, setSession, begin, fa
       return null;
     } finally {
       finish();
+    }
+  }
+
+  async function resendVerificationCode() {
+    const email = localStorage.getItem("verificationEmail");
+    if (!email) {
+      fail("Your registration email was not found. Please register again.");
+      return false;
+    }
+    if (resendLoading || resendCooldown > 0) return false;
+    setResendLoading(true);
+    fail("");
+    succeed("");
+    try {
+      const response = await api.post("/resend-verification-code", { email });
+      setVerificationCode("");
+      setResendCooldown(60);
+      succeed(response.data?.message || "A new verification code has been sent.");
+      return true;
+    } catch (requestError) {
+      const retryAfter = Number(requestError.response?.data?.retryAfterSeconds || 0);
+      if (retryAfter > 0) setResendCooldown(retryAfter);
+      fail(requestError.response?.data?.message || "Unable to send a new verification code.");
+      return false;
+    } finally {
+      setResendLoading(false);
     }
   }
 
@@ -121,6 +158,9 @@ export default function useRegistrationForm({ api, router, setSession, begin, fa
     setVerificationCode,
     handleVerificationCode,
     verifyRegistrationCode,
+    resendVerificationCode,
+    resendLoading,
+    resendCooldown,
     handleImage,
     removeImage,
     imagePreview,
