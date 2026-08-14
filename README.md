@@ -35,8 +35,10 @@ docker run --rm -p 3000:3000 -e BACKEND_URL=http://host.docker.internal:4001 tra
 
 GitHub Actions validates pull requests. A push to `main` builds an immutable
 Docker image, transfers it to the deployment host over SSH, and updates the
-frontend and edge services. The host does not need GitHub or registry
-credentials.
+frontend and edge services without stopping Nginx during certificate renewal.
+The weekly schedule validates the application and renews the certificate over
+the live ACME webroot without redeploying unchanged code. The host does not
+need GitHub or registry credentials.
 
 Set the repository variable `DEPLOY_ENABLED=true`, then create the protected
 `production` GitHub environment and secrets documented in the backend
