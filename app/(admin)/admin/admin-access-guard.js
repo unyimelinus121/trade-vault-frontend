@@ -25,7 +25,7 @@ export default function AdminAccessGuard({ children }) {
     if (!authReady) return;
 
     if (!user || !token) {
-      router.replace("/");
+      router.replace("/manager/login");
       return;
     }
 

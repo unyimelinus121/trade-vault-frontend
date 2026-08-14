@@ -173,7 +173,7 @@ export default function AdminProvider({ children, initialRates }) {
           "Your administrator session has expired. Sign in again to delete cards.",
         );
         window.setTimeout(() => {
-          router.replace("/admin/login?next=%2Fadmin%2Fdashboard");
+          router.replace("/manager/login?next=%2Fadmin%2Fdashboard");
         }, 900);
         return false;
       }

@@ -127,7 +127,7 @@ export default function PublicAuth({ children }) {
       customerSupportApi.clearSupportState();
       clearSession();
       setLogoutLoading(false);
-      router.replace(user?.role === "admin" ? "/admin/login" : "/");
+      router.replace(user?.role === "admin" ? "/manager/login" : "/");
     }
   }
 

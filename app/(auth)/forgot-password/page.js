@@ -12,7 +12,7 @@ function ForgotPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const adminPortal = searchParams.get("portal") === "admin";
-  const loginPath = adminPortal ? "/admin/login" : "/login";
+  const loginPath = adminPortal ? "/manager/login" : "/login";
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [codeSent, setCodeSent] = useState(false);

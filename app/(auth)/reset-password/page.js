@@ -12,7 +12,7 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const resetToken = searchParams.get("token") || "";
   const adminPortal = searchParams.get("portal") === "admin";
-  const originatingLoginPath = adminPortal ? "/admin/login" : "/login";
+  const originatingLoginPath = adminPortal ? "/manager/login" : "/login";
   const recoveryPath = adminPortal ? "/forgot-password?portal=admin" : "/forgot-password";
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -38,7 +38,7 @@ function ResetPasswordForm() {
     }
     const result = await completePasswordReset({ resetToken, password });
     if (result) {
-      setLoginPath(result.loginPath || "/login");
+      setLoginPath(adminPortal ? "/manager/login" : result.loginPath || "/login");
       setCompleted(true);
       setPassword("");
       setConfirmation("");
@@ -63,7 +63,7 @@ function ResetPasswordForm() {
           <div className="mt-8 rounded-2xl border border-tertiary/20 bg-tertiary/10 p-5 text-sm leading-6 text-tertiary" role="status">{message || "Password reset successfully."}</div>
         )}
 
-        <p className="mt-6 text-center text-sm text-on-surface-variant"><Link href={completed ? loginPath : resetToken ? originatingLoginPath : recoveryPath} className="font-bold text-primary hover:text-on-surface">{completed ? `Continue to ${loginPath === "/admin/login" ? "admin login" : "login"}` : resetToken ? `Back to ${adminPortal ? "admin login" : "login"}` : "Request a new code"}</Link></p>
+        <p className="mt-6 text-center text-sm text-on-surface-variant"><Link href={completed ? loginPath : resetToken ? originatingLoginPath : recoveryPath} className="font-bold text-primary hover:text-on-surface">{completed ? `Continue to ${loginPath === "/manager/login" ? "admin login" : "login"}` : resetToken ? `Back to ${adminPortal ? "admin login" : "login"}` : "Request a new code"}</Link></p>
       </section>
     </main>
   );
