@@ -30,7 +30,7 @@ export default function useLoginForm({ api, router, setSession, begin, fail, suc
       setSession(receivedUser);
       setLoginForm(emptyLoginForm);
       succeed(response.data?.message || "Login successful.");
-      router.replace(destination);
+      router.replace(receivedUser.accountStatus === "suspended" ? "/account-suspended" : destination);
       return response.data;
     } catch (requestError) {
       fail(requestError.response?.data?.message || "Unable to log in.");

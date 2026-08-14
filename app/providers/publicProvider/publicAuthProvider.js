@@ -80,6 +80,26 @@ export default function PublicAuth({ children }) {
     restoreSession();
   }, []);
 
+  useEffect(() => {
+    function handleAccountStatus(event) {
+      const accountStatus = event.detail?.accountStatus;
+      if (!new Set(["active", "suspended", "deactivated"]).has(accountStatus)) return;
+      setUser((current) => {
+        if (!current) return current;
+        const updated = { ...current, accountStatus };
+        cacheProfile(updated);
+        return updated;
+      });
+      if (accountStatus === "suspended") router.replace("/account-suspended");
+      if (accountStatus === "deactivated") {
+        clearSession();
+        router.replace("/");
+      }
+    }
+    window.addEventListener("tradevault:account-status", handleAccountStatus);
+    return () => window.removeEventListener("tradevault:account-status", handleAccountStatus);
+  }, [router]);
+
   const sharedFormOptions = {
     api,
     router,

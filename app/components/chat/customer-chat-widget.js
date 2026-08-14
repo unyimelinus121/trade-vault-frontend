@@ -12,8 +12,9 @@ export default function CustomerChatWidget() {
   const router = useRouter();
   const { userChatOpen, userChatDraft, openUserChat, closeUserChat, messages, loading, sending, connected, error, unreadCount, sendMessage, deleteMessage } = useChat();
   const isAuthenticated = Boolean(token && user?.role === "user");
+  const isSuspended = user?.accountStatus === "suspended";
   const isAdmin = Boolean(token && user?.role === "admin");
-  const visibleOpen = userChatOpen && isAuthenticated;
+  const visibleOpen = userChatOpen && isAuthenticated && !isSuspended;
   const chatHistoryEntryRef = useRef(false);
 
   useEffect(() => {
@@ -65,6 +66,8 @@ export default function CustomerChatWidget() {
   async function requestDelete(messageId) {
     if (window.confirm("Delete this message permanently?")) await deleteMessage(messageId);
   }
+
+  if (isSuspended) return null;
 
   return (
     <div className="customer-chat-dock fixed right-5 bottom-5 z-[75] transition-[bottom] max-[720px]:right-3 max-[720px]:bottom-[86px]">

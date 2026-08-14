@@ -191,7 +191,7 @@ export default function ChatProvider({ children }) {
   }, [role]);
 
   useEffect(() => {
-    if (!authReady || !token || !currentUserId) return;
+    if (!authReady || !token || !currentUserId || user?.accountStatus !== "active") return;
     let socket;
     let cancelled = false;
     api.post("/socket-token").then((response) => {
@@ -221,6 +221,10 @@ export default function ChatProvider({ children }) {
 
     socket.on("disconnect", () => setConnected(false));
     socket.on("connect_error", () => setConnected(false));
+
+    socket.on("account:status", (detail) => {
+      window.dispatchEvent(new CustomEvent("tradevault:account-status", { detail }));
+    });
 
     socket.on("chat:message:new", ({ message, conversation: updatedConversation }) => {
       if (!message || !updatedConversation) return;
@@ -306,7 +310,7 @@ export default function ChatProvider({ children }) {
       socketRef.current = null;
       setConnected(false);
     };
-  }, [authReady, token, currentUserId, role, loadAdminConversation, loadAdminConversations, loadUserChat, markRead]);
+  }, [authReady, token, currentUserId, role, user?.accountStatus, loadAdminConversation, loadAdminConversations, loadUserChat, markRead]);
 
   const unreadCount = useMemo(() => {
     if (role === "admin") {

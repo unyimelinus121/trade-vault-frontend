@@ -6,6 +6,7 @@ import Navbar from "./navbar";
 
 export default function PublicChrome({ children }) {
   const pathname = usePathname();
+  if (pathname === "/account-suspended") return children;
   const usesCustomerWorkspace = pathname === "/account" || pathname === "/support";
 
   if (usesCustomerWorkspace) {

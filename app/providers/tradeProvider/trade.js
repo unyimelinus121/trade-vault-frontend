@@ -206,7 +206,7 @@ export default function TradeProvider({ children }) {
 
   useEffect(() => {
     if (!authReady) return;
-    if (!token || user?.role !== "user") return;
+    if (!token || user?.role !== "user" || user?.accountStatus !== "active") return;
     if (new Set(["/login", "/registration", "/verify-code"]).has(pathname)) return;
     if (accountSummaryRef.current.token !== token) {
       accountSummaryRef.current = { token, loadedAt: 0 };
@@ -223,12 +223,12 @@ export default function TradeProvider({ children }) {
       accountSummaryRef.current = { token, loadedAt: Date.now() };
     }
     loadAccountData();
-  }, [authReady, getNotifications, getWallet, pathname, token, user?.role]);
+  }, [authReady, getNotifications, getWallet, pathname, token, user?.accountStatus, user?.role]);
 
   useVisibleInterval(() => Promise.all([
     getWallet({ silent: true, summary: true }),
     getNotifications({ silent: true, summary: true }),
-  ]), 60_000, authReady && Boolean(token) && user?.role === "user");
+  ]), 60_000, authReady && Boolean(token) && user?.role === "user" && user?.accountStatus === "active");
 
   useEffect(() => {
     if (typeof window === "undefined" || user?.role !== "user") return undefined;
